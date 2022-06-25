@@ -2,12 +2,12 @@ package main
 
 import (
 	"fmt"
+	"github.com/Pandalad1n/powwow/hashcash"
 	pb "github.com/Pandalad1n/powwow/proto"
-	tcp2 "github.com/Pandalad1n/powwow/tcp"
+	"github.com/Pandalad1n/powwow/tcp"
 	"google.golang.org/protobuf/proto"
 	"log"
 	"net"
-	"time"
 )
 
 func main() {
@@ -15,18 +15,36 @@ func main() {
 	if err != nil {
 		log.Fatalln(err)
 	}
-	c := tcp2.NewConnection(conn)
+	c := tcp.NewConnection(conn)
+	for {
+		msg, err := c.ReadMessage()
+		if err != nil {
+			log.Fatalln(err)
+		}
+		pmsg := pb.Message{}
+		err = proto.Unmarshal(msg, &pmsg)
+		if err != nil {
+			log.Fatalln(err)
+		}
+		switch pmsg.Payload.(type) {
+		case *pb.Message_Challenge:
+			pChallenge := pmsg.GetChallenge()
+			challenge := hashcash.Challenge{Digest: pChallenge.Digest, Difficulty: pChallenge.Difficulty}
+			solution := challenge.Solve()
+			sMessage := pb.Message{Payload: &pb.Message_Solution{Solution: &pb.Solution{Solution: solution}}}
+			pMessage, err := proto.Marshal(&sMessage)
+			if err != nil {
+				return
+			}
+			err = c.WriteMessage(pMessage)
+			if err != nil {
+				return
+			}
+		case *pb.Message_Wisdom:
+			fmt.Println(pmsg.GetWisdom().String())
+			return
+		}
 
-	time.Sleep(1 * time.Second)
-	msg, err := c.ReadMessage()
-	if err != nil {
-		log.Fatalln(err)
 	}
-	pmsg := pb.Message{}
-	err = proto.Unmarshal(msg, &pmsg)
-	if err != nil {
-		log.Fatalln(err)
-	}
-	fmt.Println(pmsg.String())
 
 }
