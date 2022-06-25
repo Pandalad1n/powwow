@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"github.com/Pandalad1n/powwow/hashcash"
 	pb "github.com/Pandalad1n/powwow/proto"
@@ -11,7 +12,11 @@ import (
 )
 
 func main() {
-	conn, err := net.Dial("tcp", "powwow_server:8888")
+	host := flag.String("host", "", "server host")
+	port := flag.Int("port", 8888, "server port")
+	flag.Parse()
+
+	conn, err := net.Dial("tcp", fmt.Sprintf("%s:%v", *host, *port))
 	if err != nil {
 		log.Fatalln(err)
 	}

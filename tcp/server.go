@@ -67,11 +67,6 @@ func (c *Connection) Close() error {
 type Handler interface {
 	ServeTCP(Conn)
 }
-type HandleFunc func(Conn)
-
-func (f HandleFunc) ServeTCP(c Conn) {
-	f(c)
-}
 
 type Server struct {
 	Handler Handler
