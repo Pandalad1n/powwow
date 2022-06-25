@@ -10,10 +10,11 @@ import (
 )
 
 type Handler struct {
+	Difficulty uint32
 }
 
-func (f Handler) ServeTCP(c tcp.Conn) {
-	challenge := hashcash.NewChallenge(10)
+func (h Handler) ServeTCP(c tcp.Conn) {
+	challenge := hashcash.NewChallenge(h.Difficulty)
 	cMessage := pb.Message{Payload: &pb.Message_Challenge{Challenge: &pb.Challenge{Digest: challenge.Digest, Difficulty: challenge.Difficulty}}}
 	pMessage, err := proto.Marshal(&cMessage)
 	if err != nil {
