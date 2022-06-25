@@ -20,19 +20,16 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type Request struct {
+type Solution struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// Types that are assignable to Payload:
-	//	*Request_Challenge_
-	//	*Request_Solution_
-	Payload isRequest_Payload `protobuf_oneof:"payload"`
+	Solution []byte `protobuf:"bytes,1,opt,name=solution,proto3" json:"solution,omitempty"`
 }
 
-func (x *Request) Reset() {
-	*x = Request{}
+func (x *Solution) Reset() {
+	*x = Solution{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_server_proto_msgTypes[0]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -40,13 +37,13 @@ func (x *Request) Reset() {
 	}
 }
 
-func (x *Request) String() string {
+func (x *Solution) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*Request) ProtoMessage() {}
+func (*Solution) ProtoMessage() {}
 
-func (x *Request) ProtoReflect() protoreflect.Message {
+func (x *Solution) ProtoReflect() protoreflect.Message {
 	mi := &file_server_proto_msgTypes[0]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,61 +55,29 @@ func (x *Request) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use Request.ProtoReflect.Descriptor instead.
-func (*Request) Descriptor() ([]byte, []int) {
+// Deprecated: Use Solution.ProtoReflect.Descriptor instead.
+func (*Solution) Descriptor() ([]byte, []int) {
 	return file_server_proto_rawDescGZIP(), []int{0}
 }
 
-func (m *Request) GetPayload() isRequest_Payload {
-	if m != nil {
-		return m.Payload
-	}
-	return nil
-}
-
-func (x *Request) GetChallenge() *Request_Challenge {
-	if x, ok := x.GetPayload().(*Request_Challenge_); ok {
-		return x.Challenge
-	}
-	return nil
-}
-
-func (x *Request) GetSolution() *Request_Solution {
-	if x, ok := x.GetPayload().(*Request_Solution_); ok {
+func (x *Solution) GetSolution() []byte {
+	if x != nil {
 		return x.Solution
 	}
 	return nil
 }
 
-type isRequest_Payload interface {
-	isRequest_Payload()
-}
-
-type Request_Challenge_ struct {
-	Challenge *Request_Challenge `protobuf:"bytes,1,opt,name=challenge,proto3,oneof"`
-}
-
-type Request_Solution_ struct {
-	Solution *Request_Solution `protobuf:"bytes,2,opt,name=solution,proto3,oneof"`
-}
-
-func (*Request_Challenge_) isRequest_Payload() {}
-
-func (*Request_Solution_) isRequest_Payload() {}
-
-type Response struct {
+type Challenge struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// Types that are assignable to Payload:
-	//	*Response_Challenge_
-	//	*Response_Wisdom_
-	Payload isResponse_Payload `protobuf_oneof:"payload"`
+	Digest     []byte `protobuf:"bytes,1,opt,name=digest,proto3" json:"digest,omitempty"`
+	Difficulty uint32 `protobuf:"varint,2,opt,name=difficulty,proto3" json:"difficulty,omitempty"`
 }
 
-func (x *Response) Reset() {
-	*x = Response{}
+func (x *Challenge) Reset() {
+	*x = Challenge{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_server_proto_msgTypes[1]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -120,13 +85,13 @@ func (x *Response) Reset() {
 	}
 }
 
-func (x *Response) String() string {
+func (x *Challenge) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*Response) ProtoMessage() {}
+func (*Challenge) ProtoMessage() {}
 
-func (x *Response) ProtoReflect() protoreflect.Message {
+func (x *Challenge) ProtoReflect() protoreflect.Message {
 	mi := &file_server_proto_msgTypes[1]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -138,56 +103,35 @@ func (x *Response) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use Response.ProtoReflect.Descriptor instead.
-func (*Response) Descriptor() ([]byte, []int) {
+// Deprecated: Use Challenge.ProtoReflect.Descriptor instead.
+func (*Challenge) Descriptor() ([]byte, []int) {
 	return file_server_proto_rawDescGZIP(), []int{1}
 }
 
-func (m *Response) GetPayload() isResponse_Payload {
-	if m != nil {
-		return m.Payload
+func (x *Challenge) GetDigest() []byte {
+	if x != nil {
+		return x.Digest
 	}
 	return nil
 }
 
-func (x *Response) GetChallenge() *Response_Challenge {
-	if x, ok := x.GetPayload().(*Response_Challenge_); ok {
-		return x.Challenge
+func (x *Challenge) GetDifficulty() uint32 {
+	if x != nil {
+		return x.Difficulty
 	}
-	return nil
+	return 0
 }
 
-func (x *Response) GetWisdom() *Response_Wisdom {
-	if x, ok := x.GetPayload().(*Response_Wisdom_); ok {
-		return x.Wisdom
-	}
-	return nil
-}
-
-type isResponse_Payload interface {
-	isResponse_Payload()
-}
-
-type Response_Challenge_ struct {
-	Challenge *Response_Challenge `protobuf:"bytes,1,opt,name=challenge,proto3,oneof"`
-}
-
-type Response_Wisdom_ struct {
-	Wisdom *Response_Wisdom `protobuf:"bytes,2,opt,name=wisdom,proto3,oneof"`
-}
-
-func (*Response_Challenge_) isResponse_Payload() {}
-
-func (*Response_Wisdom_) isResponse_Payload() {}
-
-type Request_Challenge struct {
+type Wisdom struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
+
+	Text string `protobuf:"bytes,1,opt,name=text,proto3" json:"text,omitempty"`
 }
 
-func (x *Request_Challenge) Reset() {
-	*x = Request_Challenge{}
+func (x *Wisdom) Reset() {
+	*x = Wisdom{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_server_proto_msgTypes[2]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -195,13 +139,13 @@ func (x *Request_Challenge) Reset() {
 	}
 }
 
-func (x *Request_Challenge) String() string {
+func (x *Wisdom) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*Request_Challenge) ProtoMessage() {}
+func (*Wisdom) ProtoMessage() {}
 
-func (x *Request_Challenge) ProtoReflect() protoreflect.Message {
+func (x *Wisdom) ProtoReflect() protoreflect.Message {
 	mi := &file_server_proto_msgTypes[2]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -213,21 +157,32 @@ func (x *Request_Challenge) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use Request_Challenge.ProtoReflect.Descriptor instead.
-func (*Request_Challenge) Descriptor() ([]byte, []int) {
-	return file_server_proto_rawDescGZIP(), []int{0, 0}
+// Deprecated: Use Wisdom.ProtoReflect.Descriptor instead.
+func (*Wisdom) Descriptor() ([]byte, []int) {
+	return file_server_proto_rawDescGZIP(), []int{2}
 }
 
-type Request_Solution struct {
+func (x *Wisdom) GetText() string {
+	if x != nil {
+		return x.Text
+	}
+	return ""
+}
+
+type Message struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Number uint64 `protobuf:"varint,1,opt,name=number,proto3" json:"number,omitempty"`
+	// Types that are assignable to Payload:
+	//	*Message_Solution
+	//	*Message_Challenge
+	//	*Message_Wisdom
+	Payload isMessage_Payload `protobuf_oneof:"payload"`
 }
 
-func (x *Request_Solution) Reset() {
-	*x = Request_Solution{}
+func (x *Message) Reset() {
+	*x = Message{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_server_proto_msgTypes[3]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -235,13 +190,13 @@ func (x *Request_Solution) Reset() {
 	}
 }
 
-func (x *Request_Solution) String() string {
+func (x *Message) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*Request_Solution) ProtoMessage() {}
+func (*Message) ProtoMessage() {}
 
-func (x *Request_Solution) ProtoReflect() protoreflect.Message {
+func (x *Message) ProtoReflect() protoreflect.Message {
 	mi := &file_server_proto_msgTypes[3]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -253,139 +208,83 @@ func (x *Request_Solution) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use Request_Solution.ProtoReflect.Descriptor instead.
-func (*Request_Solution) Descriptor() ([]byte, []int) {
-	return file_server_proto_rawDescGZIP(), []int{0, 1}
+// Deprecated: Use Message.ProtoReflect.Descriptor instead.
+func (*Message) Descriptor() ([]byte, []int) {
+	return file_server_proto_rawDescGZIP(), []int{3}
 }
 
-func (x *Request_Solution) GetNumber() uint64 {
-	if x != nil {
-		return x.Number
-	}
-	return 0
-}
-
-type Response_Challenge struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	Task []byte `protobuf:"bytes,1,opt,name=task,proto3" json:"task,omitempty"`
-}
-
-func (x *Response_Challenge) Reset() {
-	*x = Response_Challenge{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_server_proto_msgTypes[4]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *Response_Challenge) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*Response_Challenge) ProtoMessage() {}
-
-func (x *Response_Challenge) ProtoReflect() protoreflect.Message {
-	mi := &file_server_proto_msgTypes[4]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use Response_Challenge.ProtoReflect.Descriptor instead.
-func (*Response_Challenge) Descriptor() ([]byte, []int) {
-	return file_server_proto_rawDescGZIP(), []int{1, 0}
-}
-
-func (x *Response_Challenge) GetTask() []byte {
-	if x != nil {
-		return x.Task
+func (m *Message) GetPayload() isMessage_Payload {
+	if m != nil {
+		return m.Payload
 	}
 	return nil
 }
 
-type Response_Wisdom struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	Text string `protobuf:"bytes,1,opt,name=text,proto3" json:"text,omitempty"`
-}
-
-func (x *Response_Wisdom) Reset() {
-	*x = Response_Wisdom{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_server_proto_msgTypes[5]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
+func (x *Message) GetSolution() *Solution {
+	if x, ok := x.GetPayload().(*Message_Solution); ok {
+		return x.Solution
 	}
+	return nil
 }
 
-func (x *Response_Wisdom) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*Response_Wisdom) ProtoMessage() {}
-
-func (x *Response_Wisdom) ProtoReflect() protoreflect.Message {
-	mi := &file_server_proto_msgTypes[5]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
+func (x *Message) GetChallenge() *Challenge {
+	if x, ok := x.GetPayload().(*Message_Challenge); ok {
+		return x.Challenge
 	}
-	return mi.MessageOf(x)
+	return nil
 }
 
-// Deprecated: Use Response_Wisdom.ProtoReflect.Descriptor instead.
-func (*Response_Wisdom) Descriptor() ([]byte, []int) {
-	return file_server_proto_rawDescGZIP(), []int{1, 1}
-}
-
-func (x *Response_Wisdom) GetText() string {
-	if x != nil {
-		return x.Text
+func (x *Message) GetWisdom() *Wisdom {
+	if x, ok := x.GetPayload().(*Message_Wisdom); ok {
+		return x.Wisdom
 	}
-	return ""
+	return nil
 }
+
+type isMessage_Payload interface {
+	isMessage_Payload()
+}
+
+type Message_Solution struct {
+	Solution *Solution `protobuf:"bytes,1,opt,name=solution,proto3,oneof"`
+}
+
+type Message_Challenge struct {
+	Challenge *Challenge `protobuf:"bytes,2,opt,name=challenge,proto3,oneof"`
+}
+
+type Message_Wisdom struct {
+	Wisdom *Wisdom `protobuf:"bytes,3,opt,name=wisdom,proto3,oneof"`
+}
+
+func (*Message_Solution) isMessage_Payload() {}
+
+func (*Message_Challenge) isMessage_Payload() {}
+
+func (*Message_Wisdom) isMessage_Payload() {}
 
 var File_server_proto protoreflect.FileDescriptor
 
 var file_server_proto_rawDesc = []byte{
-	0x0a, 0x0c, 0x73, 0x65, 0x72, 0x76, 0x65, 0x72, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0xaa,
-	0x01, 0x0a, 0x07, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x32, 0x0a, 0x09, 0x63, 0x68,
-	0x61, 0x6c, 0x6c, 0x65, 0x6e, 0x67, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x12, 0x2e,
-	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x2e, 0x43, 0x68, 0x61, 0x6c, 0x6c, 0x65, 0x6e, 0x67,
-	0x65, 0x48, 0x00, 0x52, 0x09, 0x63, 0x68, 0x61, 0x6c, 0x6c, 0x65, 0x6e, 0x67, 0x65, 0x12, 0x2f,
-	0x0a, 0x08, 0x73, 0x6f, 0x6c, 0x75, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b,
-	0x32, 0x11, 0x2e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x2e, 0x53, 0x6f, 0x6c, 0x75, 0x74,
-	0x69, 0x6f, 0x6e, 0x48, 0x00, 0x52, 0x08, 0x73, 0x6f, 0x6c, 0x75, 0x74, 0x69, 0x6f, 0x6e, 0x1a,
-	0x0b, 0x0a, 0x09, 0x43, 0x68, 0x61, 0x6c, 0x6c, 0x65, 0x6e, 0x67, 0x65, 0x1a, 0x22, 0x0a, 0x08,
-	0x53, 0x6f, 0x6c, 0x75, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x16, 0x0a, 0x06, 0x6e, 0x75, 0x6d, 0x62,
-	0x65, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x04, 0x52, 0x06, 0x6e, 0x75, 0x6d, 0x62, 0x65, 0x72,
-	0x42, 0x09, 0x0a, 0x07, 0x70, 0x61, 0x79, 0x6c, 0x6f, 0x61, 0x64, 0x22, 0xb5, 0x01, 0x0a, 0x08,
-	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x33, 0x0a, 0x09, 0x63, 0x68, 0x61, 0x6c,
-	0x6c, 0x65, 0x6e, 0x67, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x13, 0x2e, 0x52, 0x65,
-	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x2e, 0x43, 0x68, 0x61, 0x6c, 0x6c, 0x65, 0x6e, 0x67, 0x65,
-	0x48, 0x00, 0x52, 0x09, 0x63, 0x68, 0x61, 0x6c, 0x6c, 0x65, 0x6e, 0x67, 0x65, 0x12, 0x2a, 0x0a,
-	0x06, 0x77, 0x69, 0x73, 0x64, 0x6f, 0x6d, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x10, 0x2e,
-	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x2e, 0x57, 0x69, 0x73, 0x64, 0x6f, 0x6d, 0x48,
-	0x00, 0x52, 0x06, 0x77, 0x69, 0x73, 0x64, 0x6f, 0x6d, 0x1a, 0x1f, 0x0a, 0x09, 0x43, 0x68, 0x61,
-	0x6c, 0x6c, 0x65, 0x6e, 0x67, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x74, 0x61, 0x73, 0x6b, 0x18, 0x01,
-	0x20, 0x01, 0x28, 0x0c, 0x52, 0x04, 0x74, 0x61, 0x73, 0x6b, 0x1a, 0x1c, 0x0a, 0x06, 0x57, 0x69,
-	0x73, 0x64, 0x6f, 0x6d, 0x12, 0x12, 0x0a, 0x04, 0x74, 0x65, 0x78, 0x74, 0x18, 0x01, 0x20, 0x01,
-	0x28, 0x09, 0x52, 0x04, 0x74, 0x65, 0x78, 0x74, 0x42, 0x09, 0x0a, 0x07, 0x70, 0x61, 0x79, 0x6c,
-	0x6f, 0x61, 0x64, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x0a, 0x0c, 0x73, 0x65, 0x72, 0x76, 0x65, 0x72, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x26,
+	0x0a, 0x08, 0x53, 0x6f, 0x6c, 0x75, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x1a, 0x0a, 0x08, 0x73, 0x6f,
+	0x6c, 0x75, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0c, 0x52, 0x08, 0x73, 0x6f,
+	0x6c, 0x75, 0x74, 0x69, 0x6f, 0x6e, 0x22, 0x43, 0x0a, 0x09, 0x43, 0x68, 0x61, 0x6c, 0x6c, 0x65,
+	0x6e, 0x67, 0x65, 0x12, 0x16, 0x0a, 0x06, 0x64, 0x69, 0x67, 0x65, 0x73, 0x74, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x0c, 0x52, 0x06, 0x64, 0x69, 0x67, 0x65, 0x73, 0x74, 0x12, 0x1e, 0x0a, 0x0a, 0x64,
+	0x69, 0x66, 0x66, 0x69, 0x63, 0x75, 0x6c, 0x74, 0x79, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0d, 0x52,
+	0x0a, 0x64, 0x69, 0x66, 0x66, 0x69, 0x63, 0x75, 0x6c, 0x74, 0x79, 0x22, 0x1c, 0x0a, 0x06, 0x57,
+	0x69, 0x73, 0x64, 0x6f, 0x6d, 0x12, 0x12, 0x0a, 0x04, 0x74, 0x65, 0x78, 0x74, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x04, 0x74, 0x65, 0x78, 0x74, 0x22, 0x8c, 0x01, 0x0a, 0x07, 0x4d, 0x65,
+	0x73, 0x73, 0x61, 0x67, 0x65, 0x12, 0x27, 0x0a, 0x08, 0x73, 0x6f, 0x6c, 0x75, 0x74, 0x69, 0x6f,
+	0x6e, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x09, 0x2e, 0x53, 0x6f, 0x6c, 0x75, 0x74, 0x69,
+	0x6f, 0x6e, 0x48, 0x00, 0x52, 0x08, 0x73, 0x6f, 0x6c, 0x75, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x2a,
+	0x0a, 0x09, 0x63, 0x68, 0x61, 0x6c, 0x6c, 0x65, 0x6e, 0x67, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28,
+	0x0b, 0x32, 0x0a, 0x2e, 0x43, 0x68, 0x61, 0x6c, 0x6c, 0x65, 0x6e, 0x67, 0x65, 0x48, 0x00, 0x52,
+	0x09, 0x63, 0x68, 0x61, 0x6c, 0x6c, 0x65, 0x6e, 0x67, 0x65, 0x12, 0x21, 0x0a, 0x06, 0x77, 0x69,
+	0x73, 0x64, 0x6f, 0x6d, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x07, 0x2e, 0x57, 0x69, 0x73,
+	0x64, 0x6f, 0x6d, 0x48, 0x00, 0x52, 0x06, 0x77, 0x69, 0x73, 0x64, 0x6f, 0x6d, 0x42, 0x09, 0x0a,
+	0x07, 0x70, 0x61, 0x79, 0x6c, 0x6f, 0x61, 0x64, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -400,25 +299,22 @@ func file_server_proto_rawDescGZIP() []byte {
 	return file_server_proto_rawDescData
 }
 
-var file_server_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
+var file_server_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_server_proto_goTypes = []interface{}{
-	(*Request)(nil),            // 0: Request
-	(*Response)(nil),           // 1: Response
-	(*Request_Challenge)(nil),  // 2: Request.Challenge
-	(*Request_Solution)(nil),   // 3: Request.Solution
-	(*Response_Challenge)(nil), // 4: Response.Challenge
-	(*Response_Wisdom)(nil),    // 5: Response.Wisdom
+	(*Solution)(nil),  // 0: Solution
+	(*Challenge)(nil), // 1: Challenge
+	(*Wisdom)(nil),    // 2: Wisdom
+	(*Message)(nil),   // 3: Message
 }
 var file_server_proto_depIdxs = []int32{
-	2, // 0: Request.challenge:type_name -> Request.Challenge
-	3, // 1: Request.solution:type_name -> Request.Solution
-	4, // 2: Response.challenge:type_name -> Response.Challenge
-	5, // 3: Response.wisdom:type_name -> Response.Wisdom
-	4, // [4:4] is the sub-list for method output_type
-	4, // [4:4] is the sub-list for method input_type
-	4, // [4:4] is the sub-list for extension type_name
-	4, // [4:4] is the sub-list for extension extendee
-	0, // [0:4] is the sub-list for field type_name
+	0, // 0: Message.solution:type_name -> Solution
+	1, // 1: Message.challenge:type_name -> Challenge
+	2, // 2: Message.wisdom:type_name -> Wisdom
+	3, // [3:3] is the sub-list for method output_type
+	3, // [3:3] is the sub-list for method input_type
+	3, // [3:3] is the sub-list for extension type_name
+	3, // [3:3] is the sub-list for extension extendee
+	0, // [0:3] is the sub-list for field type_name
 }
 
 func init() { file_server_proto_init() }
@@ -428,7 +324,7 @@ func file_server_proto_init() {
 	}
 	if !protoimpl.UnsafeEnabled {
 		file_server_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Request); i {
+			switch v := v.(*Solution); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -440,7 +336,7 @@ func file_server_proto_init() {
 			}
 		}
 		file_server_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Response); i {
+			switch v := v.(*Challenge); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -452,7 +348,7 @@ func file_server_proto_init() {
 			}
 		}
 		file_server_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Request_Challenge); i {
+			switch v := v.(*Wisdom); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -464,31 +360,7 @@ func file_server_proto_init() {
 			}
 		}
 		file_server_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Request_Solution); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_server_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Response_Challenge); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_server_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Response_Wisdom); i {
+			switch v := v.(*Message); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -500,13 +372,10 @@ func file_server_proto_init() {
 			}
 		}
 	}
-	file_server_proto_msgTypes[0].OneofWrappers = []interface{}{
-		(*Request_Challenge_)(nil),
-		(*Request_Solution_)(nil),
-	}
-	file_server_proto_msgTypes[1].OneofWrappers = []interface{}{
-		(*Response_Challenge_)(nil),
-		(*Response_Wisdom_)(nil),
+	file_server_proto_msgTypes[3].OneofWrappers = []interface{}{
+		(*Message_Solution)(nil),
+		(*Message_Challenge)(nil),
+		(*Message_Wisdom)(nil),
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -514,7 +383,7 @@ func file_server_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_server_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   6,
+			NumMessages:   4,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

@@ -1,8 +1,9 @@
 package main
 
 import (
-	"github.com/Pandalad1n/powwow/internal/tcp"
-	server "github.com/Pandalad1n/powwow/proto"
+	"fmt"
+	pb "github.com/Pandalad1n/powwow/proto"
+	tcp2 "github.com/Pandalad1n/powwow/tcp"
 	"google.golang.org/protobuf/proto"
 	"log"
 	"net"
@@ -14,17 +15,18 @@ func main() {
 	if err != nil {
 		log.Fatalln(err)
 	}
-	c := tcp.NewConnection(conn)
-	for i := 0; i < 5; i++ {
-		time.Sleep(1 * time.Second)
-		msg := server.Request{Payload: &server.Request_Challenge_{Challenge: &server.Request_Challenge{}}}
-		buf, err := proto.Marshal(&msg)
-		if err != nil {
-			log.Fatalln(err)
-		}
-		err = c.WriteMessage(buf)
-		if err != nil {
-			log.Fatalln(err)
-		}
+	c := tcp2.NewConnection(conn)
+
+	time.Sleep(1 * time.Second)
+	msg, err := c.ReadMessage()
+	if err != nil {
+		log.Fatalln(err)
 	}
+	pmsg := pb.Message{}
+	err = proto.Unmarshal(msg, &pmsg)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	fmt.Println(pmsg.String())
+
 }
