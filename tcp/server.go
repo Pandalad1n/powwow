@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/binary"
 	"errors"
+	"fmt"
 	"io"
 	"net"
 )
@@ -35,7 +36,7 @@ func (c *Connection) ReadMessage() ([]byte, error) {
 	}
 	size := binary.LittleEndian.Uint32(sizeBuf)
 	if size > maxMsgLen {
-		return nil, errors.New("Boom")
+		return nil, errors.New(fmt.Sprintf("Message size is more than %v", maxMsgLen))
 	}
 	message := make([]byte, size)
 	_, err = io.ReadFull(c.conn, message)

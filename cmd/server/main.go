@@ -12,7 +12,7 @@ import (
 
 func main() {
 	ctx := context.Background()
-	err := tcp.ListenAndServe(ctx, ":8888", tcp.HandleFunc(func(conn tcp.Conn) {
+	err := tcp.ListenAndServe(ctx, "0.0.0.0:8888", tcp.HandleFunc(func(conn tcp.Conn) {
 		c := hashcash.NewChallenge(10)
 		cMessage := pb.Message{Payload: &pb.Message_Challenge{Challenge: &pb.Challenge{Digest: c.Digest, Difficulty: c.Difficulty}}}
 		pMessage, err := proto.Marshal(&cMessage)
