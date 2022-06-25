@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+
+message Request {
+    message Challenge {
+    }
+
+    message Solution {
+        uint64 number = 1;
+    }
+
+    oneof payload {
+        Challenge challenge = 1;
+        Solution solution = 2;
+    }
+}
+
+message Response {
+    message Challenge {
+        bytes task = 1;
+    }
+
+    message Wisdom {
+        string text = 1;
+    }
+
+    oneof payload {
+        Challenge challenge = 1;
+        Wisdom wisdom = 2;
+    }
+}

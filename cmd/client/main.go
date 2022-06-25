@@ -2,6 +2,8 @@ package main
 
 import (
 	"github.com/Pandalad1n/powwow/internal/tcp"
+	server "github.com/Pandalad1n/powwow/proto"
+	"google.golang.org/protobuf/proto"
 	"log"
 	"net"
 	"time"
@@ -15,8 +17,12 @@ func main() {
 	c := tcp.NewConnection(conn)
 	for i := 0; i < 5; i++ {
 		time.Sleep(1 * time.Second)
-		msg := "test"
-		err := c.WriteMessage([]byte(msg))
+		msg := server.Request{Payload: &server.Request_Challenge_{Challenge: &server.Request_Challenge{}}}
+		buf, err := proto.Marshal(&msg)
+		if err != nil {
+			log.Fatalln(err)
+		}
+		err = c.WriteMessage(buf)
 		if err != nil {
 			log.Fatalln(err)
 		}

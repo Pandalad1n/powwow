@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 	"github.com/Pandalad1n/powwow/internal/tcp"
+	server "github.com/Pandalad1n/powwow/proto"
+	"google.golang.org/protobuf/proto"
 	"log"
 )
 
@@ -15,7 +17,12 @@ func main() {
 			if err != nil {
 				log.Fatalln(err)
 			}
-			fmt.Println(string(b))
+			m := server.Request{}
+			err = proto.Unmarshal(b, &m)
+			if err != nil {
+				log.Fatalln(err)
+			}
+			fmt.Println(m.String())
 		}
 	}))
 	if err != nil {
