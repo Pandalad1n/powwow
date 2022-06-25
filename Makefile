@@ -14,6 +14,10 @@ start_client:
 start_server:
 	docker run --rm  --net=${IMG} --name=${IMG}_server ${IMG}_serever
 
+.PHONY: test
+test:
+	go test ./... -race -timeout 2m
+
 .PHONY: gen
 gen:
 	docker build -t ${IMG} --build-arg ARC=`uname -p` -f proto/Dockerfile .
