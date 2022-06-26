@@ -17,7 +17,11 @@ func main() {
 
 	ctx := context.Background()
 	fmt.Println("Server starting")
-	err := tcp.ListenAndServe(ctx, fmt.Sprintf("%s:%v", *listen, *port), rpc.Handler{Difficulty: uint32(*difficulty)})
+	err := tcp.ListenAndServe(
+		ctx,
+		fmt.Sprintf("%s:%v", *listen, *port),
+		rpc.Handler{Difficulty: uint32(*difficulty)},
+	)
 	if err != nil {
 		log.Fatalln(err)
 	}

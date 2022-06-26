@@ -14,39 +14,54 @@ type Handler struct {
 	Difficulty uint32
 }
 
-func (h Handler) ServeTCP(ctx context.Context, c tcp.Conn) {
+func (h Handler) ServeTCP(_ context.Context, c tcp.Conn) {
 	challenge := hashcash.NewChallenge(h.Difficulty)
-	cMessage := pb.Message{Payload: &pb.Message_Challenge{Challenge: &pb.Challenge{Digest: challenge.Digest, Difficulty: challenge.Difficulty}}}
-	pMessage, err := proto.Marshal(&cMessage)
+	buf, err := proto.Marshal(
+		&pb.Message{
+			Payload: &pb.Message_Challenge{
+				Challenge: &pb.Challenge{
+					Digest:     challenge.Digest,
+					Difficulty: challenge.Difficulty,
+				},
+			},
+		},
+	)
 	if err != nil {
 		return
 	}
-	err = c.WriteMessage(pMessage)
+	err = c.WriteMessage(buf)
 	if err != nil {
 		return
 	}
-	resp, err := c.ReadMessage()
+	buf, err = c.ReadMessage()
 	if err != nil {
 		log.Fatalln(err)
 	}
-	pmsg := pb.Message{}
-	err = proto.Unmarshal(resp, &pmsg)
+	var msg pb.Message
+	err = proto.Unmarshal(buf, &msg)
 	if err != nil {
 		log.Fatalln(err)
 	}
-	switch pmsg.Payload.(type) {
-	case *pb.Message_Solution:
-		solution := pmsg.GetSolution()
-		if challenge.Verify(solution.Solution) {
-			wMessage := pb.Message{Payload: &pb.Message_Wisdom{Wisdom: &pb.Wisdom{Text: wisdom.Wisdom()}}}
-			pMessage, err = proto.Marshal(&wMessage)
-			if err != nil {
-				return
-			}
-			err = c.WriteMessage(pMessage)
-			if err != nil {
-				return
-			}
-		}
+	sPayload, ok := msg.Payload.(*pb.Message_Solution)
+	if !ok {
+		log.Fatalln("Wrong message")
+	}
+	if !challenge.Verify(sPayload.Solution.Solution) {
+		return
+	}
+	msg = pb.Message{
+		Payload: &pb.Message_Wisdom{
+			Wisdom: &pb.Wisdom{
+				Text: wisdom.Wisdom(),
+			},
+		},
+	}
+	buf, err = proto.Marshal(&msg)
+	if err != nil {
+		return
+	}
+	err = c.WriteMessage(buf)
+	if err != nil {
+		return
 	}
 }
