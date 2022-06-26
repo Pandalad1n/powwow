@@ -1,18 +1,21 @@
 IMG = powwow
+IMG_CLIENT = powwow/client
+IMG_SERVER = powwow/server
+NETWORK = powwow
 
 .PHONY: build
 build:
-	docker build -t ${IMG}_serever -f ${PWD}/cmd/server/Dockerfile .
-	docker build -t ${IMG}_client -f ${PWD}/cmd/client/Dockerfile .
-	docker network create ${IMG} | true
+	docker build -t ${IMG_SERVER} -f ${PWD}/cmd/server/Dockerfile .
+	docker build -t ${IMG_CLIENT} -f ${PWD}/cmd/client/Dockerfile .
+	docker network create ${NETWORK} | true
 
-.PHONY: start_client
-start_client:
-	docker run --rm --net=${IMG} --name=${IMG}_client ${IMG}_client
+.PHONY: start-client
+start-client:
+	docker run --rm --net=${IMG} --name=${IMG_CLIENT} ${IMG_CLIENT}
 
-.PHONY: start_server
-start_server:
-	docker run --rm  --net=${IMG} --name=${IMG}_server ${IMG}_serever
+.PHONY: start-server
+start-server:
+	docker run --rm --net=${IMG_SERVER} --name=${IMG_SERVER} ${IMG_SERVER}
 
 .PHONY: test
 test:
