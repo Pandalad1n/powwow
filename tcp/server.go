@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"net"
+	"sync"
 )
 
 const maxMsgLen = 5 * 1000 * 1000
@@ -21,51 +22,16 @@ type Conn interface {
 	WriteMessage([]byte) error
 }
 
-type Connection struct {
-	conn net.Conn
-}
-
-func NewConnection(conn net.Conn) *Connection {
-	return &Connection{conn: conn}
-}
-func (c *Connection) ReadMessage() ([]byte, error) {
-	sizeBuf := make([]byte, 4)
-	_, err := io.ReadFull(c.conn, sizeBuf)
+func Dial(address string) (Conn, error) {
+	c, err := net.Dial("tcp", address)
 	if err != nil {
 		return nil, err
 	}
-	size := binary.LittleEndian.Uint32(sizeBuf)
-	if size > maxMsgLen {
-		return nil, errors.New(fmt.Sprintf("Message size is more than %v", maxMsgLen))
-	}
-	message := make([]byte, size)
-	_, err = io.ReadFull(c.conn, message)
-	if err != nil {
-		return nil, err
-	}
-	return message, nil
-}
-
-func (c *Connection) WriteMessage(message []byte) error {
-	size := make([]byte, 4)
-	binary.LittleEndian.PutUint32(size, uint32(len(message)))
-	_, err := c.conn.Write(size)
-	if err != nil {
-		return err
-	}
-	_, err = c.conn.Write(message)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-func (c *Connection) Close() error {
-	return c.conn.Close()
+	return &conn{conn: c}, nil
 }
 
 type Handler interface {
-	ServeTCP(Conn)
+	ServeTCP(context.Context, Conn)
 }
 
 type Server struct {
@@ -83,13 +49,68 @@ func (srv *Server) ListenAndServe(ctx context.Context) error {
 	if err != nil {
 		return err
 	}
-	defer listener.Close()
+	var wg sync.WaitGroup
+	defer wg.Wait()
+	wg.Add(1)
+	go func() {
+		<-ctx.Done()
+		_ = listener.Close()
+		wg.Done()
+	}()
 	for {
+		// Usually we want to limit how many connections can be served in parallel.
+		// But we keep it simple.
 		c, err := listener.Accept()
 		if err != nil {
 			return err
 		}
-		srv.Handler.ServeTCP(&Connection{conn: c})
-		c.Close()
+		wg.Add(1)
+		go func() {
+			ctx, cancel := context.WithCancel(context.Background())
+			srv.Handler.ServeTCP(ctx, &conn{conn: c})
+			cancel()
+			_ = c.Close()
+			wg.Done()
+		}()
 	}
+}
+
+type conn struct {
+	conn net.Conn
+}
+
+func (c *conn) ReadMessage() ([]byte, error) {
+	sizeBuf := make([]byte, 4)
+	_, err := io.ReadFull(c.conn, sizeBuf)
+	if err != nil {
+		return nil, err
+	}
+	size := binary.LittleEndian.Uint32(sizeBuf)
+	if size > maxMsgLen {
+		return nil, errors.New(fmt.Sprintf("Message size is more than %v", maxMsgLen))
+	}
+	message := make([]byte, size)
+	_, err = io.ReadFull(c.conn, message)
+	if err != nil {
+		return nil, err
+	}
+	return message, nil
+}
+
+func (c *conn) WriteMessage(message []byte) error {
+	size := make([]byte, 4)
+	binary.LittleEndian.PutUint32(size, uint32(len(message)))
+	_, err := c.conn.Write(size)
+	if err != nil {
+		return err
+	}
+	_, err = c.conn.Write(message)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (c *conn) Close() error {
+	return c.conn.Close()
 }

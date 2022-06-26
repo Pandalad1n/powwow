@@ -13,6 +13,14 @@ func TestChallenge(t *testing.T) {
 	}
 }
 
+func TestChallengeFalse(t *testing.T) {
+	c := NewChallenge(18)
+	solution := []byte{12}
+	if c.Verify(solution) {
+		t.Fail()
+	}
+}
+
 func BenchmarkChallenge(b *testing.B) {
 	difficulties := [...]uint32{1, 5, 10, 15, 20}
 	for _, d := range difficulties {

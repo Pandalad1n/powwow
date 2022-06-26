@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-func GetWisdom() string {
+func Wisdom() string {
 	WordsOfWisdom := []string{
 		"There are no excuses. There are no good reasons",
 		"More than cleverness, we need kindness and gentleness. Charlie Chaplin kindness",

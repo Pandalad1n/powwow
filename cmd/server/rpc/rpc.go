@@ -1,6 +1,7 @@
 package rpc
 
 import (
+	"context"
 	"github.com/Pandalad1n/powwow/hashcash"
 	pb "github.com/Pandalad1n/powwow/proto"
 	"github.com/Pandalad1n/powwow/tcp"
@@ -13,7 +14,7 @@ type Handler struct {
 	Difficulty uint32
 }
 
-func (h Handler) ServeTCP(c tcp.Conn) {
+func (h Handler) ServeTCP(ctx context.Context, c tcp.Conn) {
 	challenge := hashcash.NewChallenge(h.Difficulty)
 	cMessage := pb.Message{Payload: &pb.Message_Challenge{Challenge: &pb.Challenge{Digest: challenge.Digest, Difficulty: challenge.Difficulty}}}
 	pMessage, err := proto.Marshal(&cMessage)
@@ -37,7 +38,7 @@ func (h Handler) ServeTCP(c tcp.Conn) {
 	case *pb.Message_Solution:
 		solution := pmsg.GetSolution()
 		if challenge.Verify(solution.Solution) {
-			wMessage := pb.Message{Payload: &pb.Message_Wisdom{Wisdom: &pb.Wisdom{Text: wisdom.GetWisdom()}}}
+			wMessage := pb.Message{Payload: &pb.Message_Wisdom{Wisdom: &pb.Wisdom{Text: wisdom.Wisdom()}}}
 			pMessage, err = proto.Marshal(&wMessage)
 			if err != nil {
 				return

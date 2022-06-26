@@ -8,7 +8,6 @@ import (
 	"github.com/Pandalad1n/powwow/tcp"
 	"google.golang.org/protobuf/proto"
 	"log"
-	"net"
 )
 
 func main() {
@@ -16,11 +15,10 @@ func main() {
 	port := flag.Int("port", 8888, "server port")
 	flag.Parse()
 
-	conn, err := net.Dial("tcp", fmt.Sprintf("%s:%v", *host, *port))
+	c, err := tcp.Dial(fmt.Sprintf("%s:%v", *host, *port))
 	if err != nil {
 		log.Fatalln(err)
 	}
-	c := tcp.NewConnection(conn)
 	for {
 		msg, err := c.ReadMessage()
 		if err != nil {
