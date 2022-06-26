@@ -21,6 +21,15 @@ start-server:
 test:
 	docker run -it --rm -w /app -v ${PWD}:/app golang:1.17 go test ./... -race -timeout 2m
 
+.PHONY: lint
+lint:
+	docker run \
+		--rm \
+		-ti \
+		-w /app \
+		-v $(PWD):/app \
+		golangci/golangci-lint:v1.45-alpine golangci-lint run
+
 .PHONY: gen
 gen:
 	docker build -t ${IMG} --build-arg ARC=`uname -p` -f proto/Dockerfile .

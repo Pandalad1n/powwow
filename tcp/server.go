@@ -3,7 +3,6 @@ package tcp
 import (
 	"context"
 	"encoding/binary"
-	"errors"
 	"fmt"
 	"io"
 	"net"
@@ -87,7 +86,7 @@ func (c *conn) ReadMessage() ([]byte, error) {
 	}
 	size := binary.LittleEndian.Uint32(sizeBuf)
 	if size > maxMsgLen {
-		return nil, errors.New(fmt.Sprintf("Message size is more than %v", maxMsgLen))
+		return nil, fmt.Errorf("message size is more than %d", maxMsgLen)
 	}
 	message := make([]byte, size)
 	_, err = io.ReadFull(c.conn, message)

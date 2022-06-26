@@ -17,5 +17,5 @@ var wordsOfWisdom = [...]string{
 
 func Wisdom() string {
 	rand.Seed(time.Now().Unix())
-	return wordsOfWisdom[rand.Intn(len(wordsOfWisdom))]
+	return wordsOfWisdom[rand.Intn(len(wordsOfWisdom))] // nolint:gosec
 }
