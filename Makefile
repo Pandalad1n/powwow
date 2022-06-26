@@ -19,7 +19,7 @@ start-server:
 
 .PHONY: test
 test:
-	go test ./... -race -timeout 2m
+	docker run -it --rm -w /app -v ${PWD}:/app golang:1.17 go test ./... -race -timeout 2m
 
 .PHONY: gen
 gen:
