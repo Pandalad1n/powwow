@@ -1,6 +1,6 @@
 IMG = powwow
-IMG_CLIENT = powwow/client
-IMG_SERVER = powwow/server
+IMG_CLIENT = powwow-client
+IMG_SERVER = powwow-server
 NETWORK = powwow
 
 .PHONY: build
@@ -11,11 +11,11 @@ build:
 
 .PHONY: start-client
 start-client:
-	docker run --rm --net=${IMG} --name=${IMG_CLIENT} ${IMG_CLIENT}
+	docker run --rm --net=${NETWORK} --name=${IMG_CLIENT} ${IMG_CLIENT} /app/client -host ${IMG_SERVER} -port 8888
 
 .PHONY: start-server
 start-server:
-	docker run --rm --net=${IMG_SERVER} --name=${IMG_SERVER} ${IMG_SERVER}
+	docker run --rm --net=${NETWORK} --name=${IMG_SERVER} ${IMG_SERVER} /app/server -port 8888
 
 .PHONY: test
 test:

@@ -74,6 +74,8 @@ func (srv *Server) ListenAndServe(ctx context.Context) error {
 	}
 }
 
+// conn converts endless stream into desecrate messages.
+// It prepends each message with its length.
 type conn struct {
 	conn net.Conn
 }

@@ -51,8 +51,12 @@ func (c Challenge) Verify(solution []byte) bool {
 	return verifyZeros(hash, c.Difficulty)
 }
 
+// verifyZeros returns true if `data` starts with a `zeros` number of unset bits.
 func verifyZeros(data []byte, zeros uint32) bool {
 	getBit := func(from byte, pos uint8) bool {
+		// Creating a mask by shifting 1 to required position.
+		// Then applying that mask to `from`.
+		// If resulting value is not 0 then the corresponding bit is set.
 		return from&(1<<(7-pos)) != 0
 	}
 	var count uint32
