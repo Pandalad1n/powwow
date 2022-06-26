@@ -14,33 +14,35 @@ func Test(t *testing.T) {
 	server := exec.CommandContext(
 		ctx,
 		"go", "run", "../server/.",
-		"-listen", "0.0.0.0",
-		"-port", "8888",
+		"-listen", "localhost",
+		"-port", "8080",
 	)
 	err := server.Start()
 	if err != nil {
 		t.Error(err)
 		t.FailNow()
 	}
-	client := exec.CommandContext(
-		ctx,
-		"go", "run", "../client/.",
-		"-port", "8888",
-	)
+
 	wisdom := bytes.NewBuffer(nil)
-	client.Stdout = wisdom
 	for i := 0; i < 10; i++ {
 		time.Sleep(100 * time.Millisecond)
+		client := exec.CommandContext(
+			ctx,
+			"go", "run", "../client/.",
+			"-host", "localhost",
+			"-port", "8080",
+		)
+		client.Stdout = wisdom
 		err = client.Start()
+		if err != nil {
+			t.Error(err)
+			t.FailNow()
+		}
+		err = client.Wait()
 		if err == nil {
 			break
 		}
 	}
-	if err != nil {
-		t.Error(err)
-		t.FailNow()
-	}
-	err = client.Wait()
 	if err != nil {
 		t.Error(err)
 		t.FailNow()
